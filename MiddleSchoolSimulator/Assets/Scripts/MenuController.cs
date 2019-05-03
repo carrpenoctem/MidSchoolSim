@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
     private static GameObject _activePanel;
+    private AsyncOperation operation;
     public Camera mainCamera;
+    public GameObject loadingScreen;
 
     private void Start()
     {
@@ -54,5 +57,23 @@ public class MenuController : MonoBehaviour
         {
             animator.SetBool("ResolutionHigh",true);
         }
+    }
+
+    public void LoadLevel()
+    {
+        StartCoroutine(BeginLoad());
+    }
+
+    private IEnumerator BeginLoad()
+    {
+        operation = SceneManager.LoadSceneAsync(1);
+        loadingScreen.SetActive(true);
+        while (!operation.isDone)
+        {
+            print(operation.progress);
+            yield return null;
+        }
+
+        operation = null;
     }
 }
