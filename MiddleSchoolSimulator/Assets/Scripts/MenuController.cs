@@ -5,6 +5,13 @@ using UnityEngine;
 public class MenuController : MonoBehaviour
 {
     private static GameObject _activePanel;
+    public Camera mainCamera;
+
+    private void Start()
+    {
+        Animator cameraAnimator = mainCamera.GetComponent<Animator>();
+        CheckResolution(cameraAnimator);
+    }
 
     public void ActivatePanel(GameObject _newPanel)
     {
@@ -31,5 +38,21 @@ public class MenuController : MonoBehaviour
     public void Quit()
     {
         Application.Quit();
+    }
+
+    private void CheckResolution(Animator animator)
+    {
+        if (Screen.width < 1280)
+        {
+            animator.SetBool("ResolutionLow", true);
+        }
+        else if(Screen.width>=1280 && Screen.width < 1920)
+        {
+            animator.SetBool("ResolutionMid", true);
+        }
+        else
+        {
+            animator.SetBool("ResolutionHigh",true);
+        }
     }
 }
