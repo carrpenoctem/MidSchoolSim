@@ -7,6 +7,8 @@ public class EnemySpawnControl : MonoBehaviour
     public GameObject EnemyPrefab;
     public GameObject[] Destinations;
 
+    public float rotation;
+
     private GameControl _GameControl;
     private GameObject _SelectedDestination;
 
@@ -18,7 +20,7 @@ public class EnemySpawnControl : MonoBehaviour
     public void Spawn()
     {
         PickDestination();
-        GameObject enemy = Instantiate(EnemyPrefab);
+        GameObject enemy = Instantiate(EnemyPrefab, new Vector3(0,0,0), Quaternion.Euler(0, 0, rotation));
         enemy.transform.SetParent(gameObject.transform, false);
         enemy.GetComponent<EnemyControl>().DickPoint = _SelectedDestination;
     }

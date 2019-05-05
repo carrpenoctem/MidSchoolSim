@@ -14,28 +14,37 @@ public class EnemyControl : MonoBehaviour {
     private GameControl _GameControl;
     private Animator _Pencil;
     private Vector3 _Destination;
+    private Vector3 _StartPosition;
 
     private bool _isVisible;
     private bool _isDrawing;
     private bool _wasHit;
     private bool _startedPenis = false; // so it instantiates only one
     private bool _isWithdrawing;
-    private int _loadType;  // 0+ - small dick, 4+ - big dick, 6 - ad
+    private int _loadType;  // 0-54 small dick, 55-89 - big dick, 90-100 - ad
 
     // Start is called before the first frame update
     void Start()
     {
+        _StartPosition = transform.position;
         _GameControl = FindObjectOfType<GameControl>();
         _Destination = new Vector3(DickPoint.transform.position.x, DickPoint.transform.position.y, 0);
-        _loadType = Random.Range(0, 2);
         _Pencil = transform.GetComponentInChildren<Animator>();
-        _loadType = Random.Range(0, 6);
+        _loadType = Random.Range(0, 100);
+        print(_loadType);
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        MoveTowardsPoint();
+        if (_isWithdrawing)
+        {
+            Withdraw();
+        }
+        else
+        {
+            MoveTowardsPoint();
+        }
         CheckIfInsideMap();
     }
 
@@ -44,7 +53,7 @@ public class EnemyControl : MonoBehaviour {
         if (transform.position.x < 0 || transform.position.x > Screen.width)
         {
             _isVisible = false;
-            if (_wasHit||_isWithdrawing)
+            if (_wasHit || _isWithdrawing)
             {
                 Destroy(this.gameObject);
             }
@@ -71,26 +80,25 @@ public class EnemyControl : MonoBehaviour {
             {
                 _isDrawing = false;
                 transform.position = Vector3.MoveTowards(transform.position, _Destination, pencilSpeed * Time.deltaTime);
-                Vector2 rotation = new Vector2(_Destination.x , _Destination.y );
-                transform.right = rotation;
             }
             else
             {
                 _isDrawing = true;
                 if (!_startedPenis)
                 {
-                    if (_loadType < 4)
+                    if (_loadType < 55)
                     {
                         CreatePenis();
                         Dick.GetComponent<DickControl>().SetMaxScale(0.6f);
                     }
-                    else if (_loadType < 6)
+                    else if (_loadType < 90)
                     {
                         CreatePenis();
                         Dick.GetComponent<DickControl>().SetMaxScale(1);
                     }
                     else
                     {
+                        print("I have ad");
                         _isWithdrawing = true;
                     }
                     _startedPenis = true;
@@ -98,22 +106,18 @@ public class EnemyControl : MonoBehaviour {
             }
             DrawDick();
         }
-        else
-        {
-            Withdraw();
-        }
     }
 
     public void Withdraw()
     {
-        transform.position = Vector3.MoveTowards(transform.position, -_Destination, 2 * pencilSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, _StartPosition, 2 * pencilSpeed * Time.deltaTime);
         _Pencil.Play("Idle");
     }
 
-    public void GoBack()
+    public void IsHit()
     {
-       // transform.position = Vector3.MoveTowards(transform.position, -transform.right, _GameControl.attackPower);
-        transform.position = Vector3.MoveTowards(transform.position, -transform.right, 55);
+        // transform.position = Vector3.MoveTowards(transform.position, -transform.right, _GameControl.attackPower);
+        transform.position = Vector3.MoveTowards(transform.position, _StartPosition, 55);
         _wasHit = true;
         _isDrawing = false;
     }
@@ -122,23 +126,32 @@ public class EnemyControl : MonoBehaviour {
     {
         if (_isDrawing)
         {
-            float _dickCurrentScale = Dick.GetComponent<RectTransform>().localScale.x;
-            float _dickMaxScale = Dick.GetComponent<DickControl>().GetMaxScale();
-
-            if (_dickCurrentScale < _dickMaxScale)
+            if (Dick == null)
             {
-                Dick.GetComponent<DickControl>().DrawPenis();
-                _Pencil.Play("PencilDrawing");
+                _isWithdrawing = true;
+                Withdraw();
             }
             else
             {
-                _isWithdrawing = true;
+                float _dickCurrentScale = Dick.GetComponent<RectTransform>().localScale.x;
+                float _dickMaxScale = Dick.GetComponent<DickControl>().GetMaxScale();
+
+                if (_dickCurrentScale < _dickMaxScale)
+                {
+                    Dick.GetComponent<DickControl>().DrawPenis();
+                    _Pencil.Play("PencilDrawing");
+                }
+                else
+                {
+                    _isWithdrawing = true;
+                }
             }
         }
         else
         {
             _Pencil.Play("Idle");
         }
+
     }
 
     void CreatePenis()

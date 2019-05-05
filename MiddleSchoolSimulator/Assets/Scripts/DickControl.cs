@@ -29,12 +29,6 @@ public class DickControl : MonoBehaviour
         _localScaleY = _RectTransform.localScale.y;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void SetMaxScale(float maxScale)
     {
         this._maxScale = maxScale;
@@ -46,9 +40,12 @@ public class DickControl : MonoBehaviour
 
     public void DrawPenis()
     {
-        _localScaleY = _localScaleY + showingUpSpeed * Time.deltaTime;
-        _localScaleX = _localScaleX + showingUpSpeed * Time.deltaTime;
-        _RectTransform.localScale = new Vector3(_localScaleX, _localScaleY, 1.0f);
+        if (_RectTransform != null)
+        {
+            _localScaleY = _localScaleY + showingUpSpeed * Time.deltaTime;
+            _localScaleX = _localScaleX + showingUpSpeed * Time.deltaTime;
+            _RectTransform.localScale = new Vector3(_localScaleX, _localScaleY, 1.0f);
+        }
     }
 
 }
