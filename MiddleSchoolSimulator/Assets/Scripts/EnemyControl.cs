@@ -9,8 +9,6 @@ public class EnemyControl : MonoBehaviour {
     public GameObject DickPrefab;
     public GameObject Dick; // dick which is created
 
-    public float pencilSpeed = 8f;  // speed of hand moving towards the spawn
-
     private GameControl _GameControl;
     private Animator _Pencil;
     private Vector3 _Destination;
@@ -22,10 +20,13 @@ public class EnemyControl : MonoBehaviour {
     private bool _startedPenis = false; // so it instantiates only one
     private bool _isWithdrawing;
     private int _loadType;  // 0-54 small dick, 55-89 - big dick, 90-100 - ad
+    private float _enemySpeed = 8f;  // speed of hand moving towards the spawn
+
 
     // Start is called before the first frame update
     void Start()
     {
+        _enemySpeed = FindObjectOfType<GameControl>().enemySpeed;
         _StartPosition = transform.position;
         _GameControl = FindObjectOfType<GameControl>();
         _Destination = new Vector3(DickPoint.transform.position.x, DickPoint.transform.position.y, 0);
@@ -76,10 +77,11 @@ public class EnemyControl : MonoBehaviour {
     {
         if (!_isWithdrawing)
         {
-            if (transform.position != _Destination)
+            //if (transform.position != _Destination)
+            if (Vector3.Distance(transform.position, _Destination) >= 2)    // in case the hand is stuck
             {
                 _isDrawing = false;
-                transform.position = Vector3.MoveTowards(transform.position, _Destination, pencilSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, _Destination, _enemySpeed * Time.deltaTime);
             }
             else
             {
@@ -110,16 +112,19 @@ public class EnemyControl : MonoBehaviour {
 
     public void Withdraw()
     {
-        transform.position = Vector3.MoveTowards(transform.position, _StartPosition, 2 * pencilSpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, _StartPosition, 2 * _enemySpeed * Time.deltaTime);
         _Pencil.Play("Idle");
     }
 
     public void IsHit()
     {
-        // transform.position = Vector3.MoveTowards(transform.position, -transform.right, _GameControl.attackPower);
-        transform.position = Vector3.MoveTowards(transform.position, _StartPosition, 55);
-        _wasHit = true;
-        _isDrawing = false;
+        if (!_isWithdrawing)
+        {
+            _GameControl.ChargePen();
+            transform.position = Vector3.MoveTowards(transform.position, _StartPosition, _GameControl.hitPower);
+            _wasHit = true;
+            _isDrawing = false;
+        }
     }
 
     void DrawDick()
@@ -158,6 +163,7 @@ public class EnemyControl : MonoBehaviour {
     {
         Dick = Instantiate(DickPrefab);
         Dick.transform.SetParent(DickPoint.transform, false);
+        Dick.GetComponent<DickControl>().hasStarted = true;
     }
 
 }
