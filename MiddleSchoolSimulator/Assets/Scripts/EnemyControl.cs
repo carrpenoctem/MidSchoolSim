@@ -112,7 +112,7 @@ public class EnemyControl : MonoBehaviour {
 
     public void Withdraw()
     {
-        transform.position = Vector3.MoveTowards(transform.position, _StartPosition, 2 * _enemySpeed * Time.deltaTime);
+        transform.position = Vector3.MoveTowards(transform.position, _StartPosition, 5 * _enemySpeed * Time.deltaTime);
         _Pencil.Play("Idle");
     }
 
@@ -120,8 +120,18 @@ public class EnemyControl : MonoBehaviour {
     {
         if (!_isWithdrawing)
         {
-            _GameControl.ChargePen();
-            transform.position = Vector3.MoveTowards(transform.position, _StartPosition, _GameControl.hitPower);
+            if(_GameControl.penPower == 100)
+            {
+                //change sprite
+                _GameControl.FullyDischargePen();
+                _isWithdrawing = true;
+                Withdraw();
+            }
+            else
+            {
+                _GameControl.ChargePen();
+                transform.position = Vector3.MoveTowards(transform.position, _StartPosition, _GameControl.hitPower);
+            }
             _wasHit = true;
             _isDrawing = false;
         }

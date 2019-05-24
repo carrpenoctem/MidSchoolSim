@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameControl : MonoBehaviour
 {
@@ -13,9 +14,10 @@ public class GameControl : MonoBehaviour
     [Header("Player")]
     public float penisEreaseSpeed = 1f;
     public float hitPower = 55;
+    public float writingSpeed = 0.1f;
     public int livesLeft = 3;
 
-    [Header("Pen")]
+    [Header("Pen Power")]
     public RectTransform PenImage;
     private Vector2 _PenImageStartWidth;
     private Animator _PenAnimator;
@@ -54,6 +56,7 @@ public class GameControl : MonoBehaviour
         _PenAnimator.Play("Game_PencilPowerUp");
         if(penPower>= 100)
         {
+            _PenAnimator.Play("Game_PencilFullPower");
             penPower = 100;
             _penDischargerTimer = 4;
         }
@@ -74,6 +77,12 @@ public class GameControl : MonoBehaviour
             _penDischargerTimer = _penDischargerTimer - Time.deltaTime;
         }
         
+    }
+
+    public void FullyDischargePen()
+    {
+        _PenAnimator.StopPlayback();
+        penPower = 0;
     }
 
     public void PenImageControl()
