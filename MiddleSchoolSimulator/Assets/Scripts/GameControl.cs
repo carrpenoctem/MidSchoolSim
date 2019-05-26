@@ -25,8 +25,11 @@ public class GameControl : MonoBehaviour
     public float penDischargeRatio = 8f;
     private float _penDischargerTimer = 0;
 
-    [Header("Time")]
+    [Header("Game Settings")]
+    public RectTransform ProgressBar;
+    public GameObject[] Apples;
     public float time = 0;
+    public int _hpCount = 3;
 
 
     // Start is called before the first frame update
@@ -91,4 +94,22 @@ public class GameControl : MonoBehaviour
         PenImage.sizeDelta = _PenImageNewSize;
     }
 
+    public void LowerHP()
+    {
+        Apples[_hpCount-1].GetComponent<Animator>().Play("Game_AppleScale");
+        _hpCount = _hpCount - 1;
+        if(_hpCount == 0)
+        {
+            //defeat
+        }
+    }
+
+    public void AddHP()
+    {
+        if(_hpCount < 3)
+        {
+            Apples[_hpCount].GetComponent<Animator>().Play("Game_AppleScaleUp");
+            _hpCount = _hpCount + 1;
+        }
+    }
 }

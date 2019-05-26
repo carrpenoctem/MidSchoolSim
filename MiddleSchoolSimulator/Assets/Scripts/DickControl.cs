@@ -84,9 +84,11 @@ public class DickControl : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if(_procentDoneFloat > 100)
         {
             _Procentage.text = "100%";
+            _GameControl.LowerHP();
         }
         else if(_procentDoneFloat <= 0 && hasStarted)
         {
+            _GameControl.AddHP();
             Destroy(this.gameObject);
         }
         else
@@ -104,4 +106,5 @@ public class DickControl : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         isEreased = false;
     }
+
 }

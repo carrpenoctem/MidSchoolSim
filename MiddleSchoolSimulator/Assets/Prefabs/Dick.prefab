@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 1428908774806648162}
   m_Layer: 5
   m_Name: Dick
-  m_TagString: Untagged
+  m_TagString: Dick
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -191,7 +191,7 @@ MonoBehaviour:
   - {fileID: 5557935857451236723, guid: 2e51dc2af9a55c84cb1394ac67cb4ff3, type: 3}
   isShowingUp: 0
   isEreased: 0
-  showingUpSpeed: 0.1
+  hasStarted: 0
 --- !u!114 &1428908774806648162
 MonoBehaviour:
   m_ObjectHideFlags: 0
